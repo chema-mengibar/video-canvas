@@ -1,0 +1,30 @@
+@import 'media';
+
+
+html, body{
+    overflow: hidden;
+}
+
+#app {
+    min-height: 100%;
+    height: 100%;
+    width: 100%;
+    min-height: 100vh;
+    background: var(--color-base);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.app-layout-header {
+    padding: 20px;
+}
+
+.app-layout-body {
+    flex: 1;
+    display:flex;
+    
+}
+
+
+

@@ -1,0 +1,20 @@
+<template>
+  <svg xmlns="http://www.w3.org/2000/svg" 
+    :class="$options.name"
+    :width="w" 
+    :height="h" 
+    :viewBox="`0 0 24 24`" 
+  >
+    <path :fill="c" fillRule="evenodd" clipRule="evenodd" d="M13.439 9.89134L11.9999 7.39868L10.5608 9.89134H11.6682V11.6683H9.89134V10.5608L7.39868 12L9.89134 13.4391V12.3317H11.6682V14.1087H10.5607L11.9998 16.6013L13.439 14.1087H12.3315V12.3317H14.1087V13.4392L16.6013 12L14.1087 10.5609V11.6683H12.3315V9.89134H13.439Z" />
+  </svg>
+</template>
+<script>
+export default {
+  name: 'Move',
+  props: {
+    w: { type: [Number, String], default: 24 },
+    h: {type: [Number, String], default: 24 },
+    c: {type: String, default: 'currentColor'}
+  }
+}
+</script>
