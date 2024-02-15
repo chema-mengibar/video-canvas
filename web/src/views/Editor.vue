@@ -26,68 +26,59 @@ export default {
     t: () => {},
     lastName: "",
     tabs:['Items', 'Markers'],
-    tab_active:'Items'
+    tab_active:'Items',
+    desp: 0,
+    despInterval: 0
   }),
   methods: {
+    mousedown: function(){
+      this.despInterval = setInterval( ()=>{
+        this.$services.toolService.desp(this.desp);
+      }, 1000)
+    },  
+    mouseup: function(){
+      clearInterval(this.despInterval);
+      setTimeout(()=>{
+        this.desp = 0;
+      })
+    },  
     navigate: function (to) {
       this.show = false;
       setTimeout(() => {
         this.$router.push(to);
-      }, 1000);
+      }, 60);
     },
+    proCent: function(){
+      console.log('---')
+      if(this.$services.toolService.video){
+        const pc =  (this.$services.toolService.currentTime * 100) / this.$services.toolService.video.duration;
+        
+        return pc
+      }
+      return 0 
+    }
   },
   created() {
     this.t = this.$services.localeService.t();
   },
   mounted() {
-
-    const targetS = 700;
-    const videoSize = {
-        w: 700,
-        h: 393
-    }
-
-    const canvas = document.getElementById("canV");
-    const ctx = canvas.getContext("2d");
-
-
-    function draw(){
-        
-        let region = new Path2D();
-        region.id = 'uno'
-        region.moveTo(10, 10);
-        region.lineTo(10, 100);
-        region.lineTo(100, 100);
-        region.closePath();
-
-        ctx.fillStyle = "#ff000088";
-        ctx.strokeStyle = "#000000";
-        ctx.fill(region);
-        ctx.stroke(region);
-    }
-
-    function update(){
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      // console.log(video.currentTime)
-      draw();
-      requestAnimationFrame(update);
-    }
-
-  
-
-    const video = document.createElement("video");
-    video.preload = 'auto';
-    video.src = "./videos/test_cwVxRjOC.mp4";
-
-    video.addEventListener('loadeddata', function() {
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-
-      update()
-    });
+   
+    const domCanvas = document.getElementById("canV");
+    this.$services.toolService.init(domCanvas);
 
 
   },
+  // computed: {
+  //   // procent: function () {
+  
+  //   //   if(this.$services.toolService.video){
+  //   //     const pc =  (this.$services.toolService.currentTime * 100) / this.$services.toolService.video.duration;
+  //   //     console.log(pc)
+  //   //     return pc
+  //   //   }
+  //   //   return 0 
+  //   // }
+  // },
   components: { 
     
     IconArrowBoth,
@@ -111,6 +102,9 @@ export default {
     Button
  },
 };
+
+
+
 </script>
 
 <style  lang="scss">
@@ -126,9 +120,10 @@ export default {
 .sidebar{
   display:flex;
   flex-direction: column;
-  width: 400px;
+  min-width: 400px;
   border-left: 1px solid var(--color-deco-base);
   height: 100vh;
+  width:35%;
 }
 
 .area {
@@ -166,6 +161,7 @@ export default {
   display: flex;
   gap: 7px;
   flex-wrap: wrap;
+  margin-bottom: 12px;
 }
 
 canvas{
@@ -206,6 +202,7 @@ canvas{
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     cursor:pointer;
+    user-select: none; 
     
     &.Items{
       &.active{
@@ -232,6 +229,19 @@ canvas{
 }
 
 
+.timeline{
+  width:100%;
+  background-color: var(--color-dark);
+  height: 10px;
+
+  .currentTime{
+    width: 0;
+    background-color: var(--primary-color-rgb);
+    height: 100%;
+  }
+}
+
+
 </style>
 
 <template>
@@ -250,24 +260,31 @@ canvas{
       </div>
       <div class="area scroll area-expand">
         <div class="area-buttons-wrapper">
+
+
+        <input  @mousedown="mousedown" @mouseup="mouseup" type="range" v-model="desp" step="0.1" min="-5" max="5" />
+          {{ desp }}
           <Button :cta="()=>{}"  icon="arrowBoth" />
           <div class="buttons-separator"></div>
           <div class="timer">00:00:00:000</div>
-          <Button :cta="()=>{}"  icon="dirRight" />
+          <Button :cta="()=>{ $services.toolService.go(); }"  icon="dirRight" />
           <div class="buttons-separator"></div>
-          <Button :cta="()=>{}"  icon="triangle" />
-          <Button :cta="()=>{}"  icon="square" />
+          <Button :cta="()=>{ $services.toolService.play(); }"  icon="triangle" />
+          <Button :cta="()=>{ $services.toolService.stop(); }"   icon="square" />
           <div class="buttons-separator"></div>
-          <Button :cta="()=>{}"  icon="leftDouble" />
-          <Button :cta="()=>{}"  icon="left" />
-          <Button :cta="()=>{}"  icon="right" />
-          <Button :cta="()=>{}"  icon="rightDouble" />
+          <Button :cta="()=>{ $services.toolService.prev2(); }"   icon="leftDouble" />
+          <Button :cta="()=>{ $services.toolService.prev1(); }"  icon="left" />
+          <Button :cta="()=>{ $services.toolService.next1(); }"   icon="right" />
+          <Button :cta="()=>{ $services.toolService.next2(); }"   icon="rightDouble" />
           <div class="buttons-separator"></div>
-          <Button :cta="()=>{}"  icon="stopLeft" />
-          <Button :cta="()=>{}"  icon="stopRight" />
+          <Button :cta="()=>{ $services.toolService.toStart(); }"   icon="stopLeft"  />
+          <Button :cta="()=>{ $services.toolService.toEnd(); }"   icon="stopRight" />
         </div>
         <div class="timeline-wrapper">
-
+          <div>{{ $services.toolService.currentTime }}</div>
+          <div  class="timeline">
+            <div class="currentTime" v-if="$services.toolService.currentTime" :style="{width: `${proCent()}%`}"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -286,7 +303,10 @@ canvas{
       <div class="area scroll area-expand sidebar-content">
          
           <div class="tabs" :class="{[tab_active]: true}">
-            <div class="tab"  v-for="tabName in tabs" :class="{'active': tabName=== tab_active, [tabName]: true}"> 
+            <div class="tab" 
+             :key="'tab_' + tabName"
+             v-on:click="()=>{ tab_active = tabName }"
+             v-for="tabName in tabs" :class="{'active': tabName=== tab_active, [tabName]: true}"> 
               {{tabName}}
             </div>
           </div>
