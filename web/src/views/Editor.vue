@@ -25,6 +25,8 @@ export default {
   data: () => ({
     t: () => {},
     lastName: "",
+    tabs:['Items', 'Markers'],
+    tab_active:'Items'
   }),
   methods: {
     navigate: function (to) {
@@ -187,7 +189,47 @@ canvas{
   
 }
 
+.tabs{
+  display: flex;
+  font-size:12px;
 
+  &.Items{
+   border-bottom: 1px solid var(--primary-color-rgb);
+  }
+
+  &.Markers{
+    border-bottom: 1px solid var(--secondary-color-rgb);
+  }
+  
+  .tab{
+    padding: 3px 14px 7px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    cursor:pointer;
+    
+    &.Items{
+      &.active{
+        color: var(--primary-text-color-rgb);
+        font-weight: var(--bold);
+        background-color: var(--primary-color-rgb);
+      }
+    }
+
+    &.Markers{
+      &.active{
+        color: var(--primary-text-color-rgb);
+        font-weight: var(--bold);
+        background-color: var(--secondary-color-rgb);
+      }
+    }
+    
+     
+  }
+}
+
+.tab-content-container{
+  padding: 14px 7px;
+}
 
 
 </style>
@@ -243,7 +285,14 @@ canvas{
       </div>
       <div class="area scroll area-expand sidebar-content">
          
-          -
+          <div class="tabs" :class="{[tab_active]: true}">
+            <div class="tab"  v-for="tabName in tabs" :class="{'active': tabName=== tab_active, [tabName]: true}"> 
+              {{tabName}}
+            </div>
+          </div>
+        <div class="tab-content-container">
+          tab
+        </div>
       </div>
     </div>
 

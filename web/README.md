@@ -1,1 +1,1 @@
-# viz-demo
+# Video Canvas
