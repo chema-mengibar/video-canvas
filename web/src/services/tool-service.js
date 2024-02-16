@@ -14,6 +14,7 @@ export default class ToolService {
     ctx = null
     video = null
     myReq = null
+    revRef = null
 
     constructor() {
         this._data = reactive({
@@ -133,18 +134,51 @@ export default class ToolService {
     play(){
 
         this.video.play();
+        clearInterval(this.revRef);
+        this.revRef = null;
         // this.update()
     }
 
     stop(){
         this.video.pause();
         cancelAnimationFrame(this.myReq);
+        clearInterval(this.revRef)
+        this.revRef = null;
     }
 
     go(){
         this.currentTime = 4.4;
         this.video.currentTime = 4.4;
         this.update()
+    }
+
+
+    reverse(){
+        // this.currentTime = 4.4;
+        // this.video.currentTime = 4.4;
+        //this.video.currentTime = this.video.duration;
+        console.log(this.revRef)
+        if(this.revRef){
+            return
+        }
+
+
+        this.revRef = setInterval(()=>{
+          
+
+            const t = this.video.currentTime - 0.1;
+            if(t <= 0 ){
+                clearInterval(this.revRef)
+                this.revRef = null;
+                this.video.currentTime = 0;
+            }else{
+                this.video.currentTime = t;
+            }
+            
+            
+            
+        }, 100)
+        this.update();
     }
 
     desp( delta ){

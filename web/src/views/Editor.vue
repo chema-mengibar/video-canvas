@@ -27,19 +27,21 @@ export default {
     lastName: "",
     tabs:['Items', 'Markers'],
     tab_active:'Items',
-    desp: 0,
-    despInterval: 0
+    desp: 2,
+    despInterval: 0,
+    range:[-10, -1, 0, 1, 10]
   }),
   methods: {
     mousedown: function(){
       this.despInterval = setInterval( ()=>{
-        this.$services.toolService.desp(this.desp);
+        const delta = this.range[this.desp];
+        this.$services.toolService.desp(delta);
       }, 1000)
     },  
     mouseup: function(){
       clearInterval(this.despInterval);
       setTimeout(()=>{
-        this.desp = 0;
+        this.desp = 2;
       })
     },  
     navigate: function (to) {
@@ -49,13 +51,32 @@ export default {
       }, 60);
     },
     proCent: function(){
-      console.log('---')
       if(this.$services.toolService.video){
         const pc =  (this.$services.toolService.currentTime * 100) / this.$services.toolService.video.duration;
         
         return pc
       }
       return 0 
+    },
+    getTimeLineWidth( visibleObject){
+      
+      const t = this.$services.toolService.video.duration - visibleObject.from - (this.$services.toolService.video.duration - visibleObject.to  );
+      if(this.$services.toolService.video){
+        const pc =  (t * 100) / this.$services.toolService.video.duration ;
+        return pc
+      }
+      return 0;
+      
+    },
+    getTimeLinePosition( t ){
+     
+      if(this.$services.toolService.video){
+        const pc =  (t * 100) / this.$services.toolService.video.duration;
+
+        return pc
+      }
+      return 10
+      
     }
   },
   created() {
@@ -242,6 +263,71 @@ canvas{
 }
 
 
+.range-wrapper{
+  width: 100px;
+  display: flex;
+  flex-direction:column;
+  
+  .range-labels{
+    display: flex;
+    
+    .range-label{
+      width:20%;
+      font-size:8px;
+
+      text-align:center;
+    }
+  }
+}
+
+.item-blocks{
+  margin-top: 12px;
+}
+
+.item-block{
+  
+  margin-bottom:10px;
+  
+  .item-block-header{
+    background-color: var(--color-dark);
+    padding: 3px;
+  }
+  
+  .item-block-timeline{
+    background-color: var(--color-M-1);
+    height: 10px;
+    position: relative;
+
+    .item-block-timeline_currentTime{
+      position: absolute;
+      left: 20px;
+      width: 20%;
+      background-color: var(--primary-color-rgb);
+      height: 100%;
+    }
+  }
+  
+  .item-block-node-block{
+    padding: 7px 0;
+    .item-block-node-label{
+      font-size: 10px;
+      padding-left: 12px;
+    }
+    .item-block-node-keyframes{
+      position: relative;
+      width: 100%;
+      height: 20px;
+      
+      .keyframe{
+        position: absolute;
+        width: 20px;
+        margin-left:-10px;
+       
+      }
+    }
+  }
+}
+
 </style>
 
 <template>
@@ -261,14 +347,24 @@ canvas{
       <div class="area scroll area-expand">
         <div class="area-buttons-wrapper">
 
-
-        <input  @mousedown="mousedown" @mouseup="mouseup" type="range" v-model="desp" step="0.1" min="-5" max="5" />
-          {{ desp }}
-          <Button :cta="()=>{}"  icon="arrowBoth" />
+          <div class="range-wrapper">
+            
+            <div class="range-labels">
+              <div class="range-label"
+                   :key="'range_' + parseInt(rangeVal)"
+                   v-for="rangeVal in range">{{rangeVal}}</div>
+            </div>
+            <div><input
+                @mousedown="mousedown"
+                @mouseup="mouseup"
+                type="range" v-model="desp" step="1" min="0" max="4" /></div>
+            
+          </div>
           <div class="buttons-separator"></div>
           <div class="timer">00:00:00:000</div>
           <Button :cta="()=>{ $services.toolService.go(); }"  icon="dirRight" />
           <div class="buttons-separator"></div>
+          <Button :cta="()=>{ $services.toolService.reverse(); }"  icon="triangle" />
           <Button :cta="()=>{ $services.toolService.play(); }"  icon="triangle" />
           <Button :cta="()=>{ $services.toolService.stop(); }"   icon="square" />
           <div class="buttons-separator"></div>
@@ -284,6 +380,49 @@ canvas{
           <div>{{ $services.toolService.currentTime }}</div>
           <div  class="timeline">
             <div class="currentTime" v-if="$services.toolService.currentTime" :style="{width: `${proCent()}%`}"></div>
+          </div>
+          
+          
+          <div class="item-blocks" v-if="$services.toolService.video && $services.toolService.project">
+            
+            <div
+                class="item-block"
+                :key="'item_' + canvasItem.name"
+                v-for=" canvasItem in  $services.toolService.project.canvas">
+              
+              <div class="item-block-header">{{canvasItem.name}}</div>
+              <div class="item-block-timeline">
+                <div
+                    :style="{
+                      left: getTimeLinePosition(canvasItem.visible.from) + '%',
+                      width: getTimeLineWidth(canvasItem.visible) + '%'
+                    
+                      }"
+                    class="item-block-timeline_currentTime"></div>
+              </div>
+
+              <template v-if="canvasItem.type === 'polygon'">
+                
+              </template>
+              <div class="item-block-node-block"
+                   :key="'item_' + canvasItem.name + '_node_' + node.id"
+                   v-for=" node in  canvasItem.nodes">
+                <div class="item-block-node-label">{{node.id}}</div>
+                <div class="item-block-node-keyframes">
+                  <div class="keyframe"
+                       :style="{
+                          left: getTimeLinePosition(frame.time) + '%',
+                        }"
+                       :key="'item_' + canvasItem.name + '_node_' + node.id + '_keyframe_' + idx "
+                       v-for=" ( frame, idx) in  node.frames"
+                  >
+                    <IconPics w="20"  />
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+            
           </div>
         </div>
       </div>
