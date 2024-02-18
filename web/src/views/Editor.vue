@@ -130,6 +130,7 @@ export default {
 
 <style  lang="scss">
 @import "../styles/media";
+@import "../components/editor/item.scss";
 
 .main{
   display:flex;
@@ -314,19 +315,26 @@ canvas{
       padding-left: 12px;
     }
     .item-block-node-keyframes{
+      background-color: var(--color-M-1);
       position: relative;
       width: 100%;
-      height: 20px;
+      height: 14px;
       
       .keyframe{
         position: absolute;
         width: 20px;
+        margin-top: -5px;
         margin-left:-10px;
        
       }
     }
   }
 }
+
+// ---------------------------------
+
+
+
 
 </style>
 
@@ -441,15 +449,126 @@ canvas{
       </div>
       <div class="area scroll area-expand sidebar-content">
          
-          <div class="tabs" :class="{[tab_active]: true}">
-            <div class="tab" 
-             :key="'tab_' + tabName"
-             v-on:click="()=>{ tab_active = tabName }"
-             v-for="tabName in tabs" :class="{'active': tabName=== tab_active, [tabName]: true}"> 
-              {{tabName}}
-            </div>
+        <div class="tabs" :class="{[tab_active]: true}">
+          <div class="tab" 
+            :key="'tab_' + tabName"
+            v-on:click="()=>{ tab_active = tabName }"
+            v-for="tabName in tabs" :class="{'active': tabName=== tab_active, [tabName]: true}"> 
+            {{tabName}}
           </div>
-        <div class="tab-content-container">
+        </div>
+
+        <div v-if="tab_active === 'Items'" class="tab-content-container">
+          
+          <div :key="'item-edit_' + canvasItem.name"
+                v-for=" canvasItem in  $services.toolService.project.canvas">
+            <div class="item-header">
+              <div class="item-header_icon">
+                <IconPolygon v-if="canvasItem.type === 'polygon'" />
+              </div>
+              <div class="item-header_label">{{ canvasItem.name }}</div>
+              <div class="item-header_close-button">
+                <IconClose h="18" w="18"/>
+              </div>
+            </div>
+            <div class="item-content">
+              <div class="item-toolbar">
+                <Button :cta="()=>{}"  label="add node" />
+                <Button :cta="()=>{}"  label="down" />
+                <Button :cta="()=>{}"  label="up" />
+                <Button :cta="()=>{}"  label="..." />
+              </div>
+              <div class="item-props">
+                <div class="prop-xy prop-row">
+                  <div class="prop-col-labels">
+                    <div>x</div>
+                    <div>y</div>
+                  </div>
+                  <div class="prop-col-values">
+                    <div>125px</div>
+                    <div>268px</div>
+                  </div>
+                  <div class="prop-col-controls">
+                      <Button :cta="()=>{}"  label="move" />
+                  </div>
+                </div>
+                <div class="prop-time prop-row">
+                  <div class="prop-col-labels">
+                    <div>fill</div>
+                    <div>stroke</div>
+                  </div>
+                  <div class="prop-col-values">
+                    <div>#55FF22 20%</div>
+                    <div>#21C047 1px solid</div>
+                  </div>
+                  
+                </div>
+                <div class="prop-styles prop-row"></div>
+                <div class="prop-nodes-animation prop-row">
+                  <input type="checkbox" id="checkbox" v-model="canvasItem.animateNodes" />
+                  <label for="checkbox">Animate nodes</label>
+                </div>
+              </div>
+               <div class="item-node-section-title">Nodes </div>
+              
+                <div class="item-node_block"
+                  :key="'item-edit_' + canvasItem.name"
+                  v-for=" nodeItem in  canvasItem.nodes"
+                 >
+                  <div class="item-sub-header">
+                      <div class="decoration"></div>
+                      <div class="icon"><IconCircle h="20" /></div>
+                      <div class="label">{{ nodeItem.id }}</div>
+                      <div class="menu">
+                        <Button :cta="()=>{}"  label="..." />
+                      </div>
+                      <div class="collapsable"></div>
+                  
+                  </div>
+                  <div class="item-node_block-body">
+                    
+                      <div 
+                        :key="'frame'"
+                        v-for=" frameItem in  nodeItem.frames"
+                        class="node-frame-block">
+                        <div class="item-sub-header">
+                          <div class="decoration"></div>
+                          <div class="icon"><IconPics h="20" /></div>
+                          <div class="label">{{ frameItem.time }}</div>
+                          <div class="menu">
+                            <Button :cta="()=>{}"  label="move" />
+                            <Button :cta="()=>{}"  label="now" />
+                            <Button :cta="()=>{}"  label="..." />
+                          </div>
+                        </div>
+                        <div class="node-frame-block-body">
+                          <div class="prop-xy prop-row">
+                            <div class="prop-col-labels">
+                              <div>x</div>
+                              <div>y</div>
+                            </div>
+                            <div class="prop-col-values">
+                              <div>{{frameItem.x}}px</div>
+                              <div>{{frameItem.x}}px</div>
+                            </div>
+                            <div class="prop-col-controls">
+                              <Button :cta="()=>{}"  label="move" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+
+
+
+            </div>
+            
+          </div>>
+
+
+        </div>
+        <div v-if="tab_active === 'Markers'" class="tab-content-container">
           tab
         </div>
       </div>

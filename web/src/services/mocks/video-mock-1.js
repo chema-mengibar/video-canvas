@@ -25,15 +25,15 @@ export default {
         fill:'#ff000055',
         border:'2px solid black',
       },
-      animateNodes: false,
-      frames:[
-        {
-          x:0,
-          y:0,
-          timeFrom:3.2,
-          timeTo:5.2
-        }
-      ],
+      animateNodes: true,
+      // frames:[
+      //   {
+      //     x:0,
+      //     y:0,
+      //     timeFrom:3.2,
+      //     timeTo:5.2
+      //   }
+      // ],
       visible:{
         from:3.2,
         to:4.9
@@ -41,6 +41,36 @@ export default {
       nodes:[
         {
           id:'node1',
+          frames:[
+            {
+              x:0,
+              y:0,
+              time:3.2,
+            },
+            {
+              x:100,
+              y:20,
+              time:4.9,
+            }
+          ],
+        } ,
+        {
+          id:'node2',
+          frames:[
+            {
+              x:0,
+              y:0,
+              time:3.2,
+            },
+            {
+              x:100,
+              y:20,
+              time:4.9,
+            }
+          ],
+        } ,
+        {
+          id:'node3',
           frames:[
             {
               x:0,
