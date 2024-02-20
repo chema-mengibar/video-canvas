@@ -25,83 +25,80 @@ export default {
   data: () => ({
     t: () => {},
     lastName: "",
-    tabs:['Items', 'Markers'],
-    tab_active:'Items',
+    tabs: ["Items", "Markers"],
+    tab_active: "Items",
     desp: 2,
     despInterval: 0,
-    range:[-10, -1, 0, 1, 10]
+    range: [-10, -1, 0, 1, 10],
   }),
   methods: {
-    mousedown: function(){
-      this.despInterval = setInterval( ()=>{
+    mousedown: function () {
+      this.despInterval = setInterval(() => {
         const delta = this.range[this.desp];
         this.$services.toolService.desp(delta);
-      }, 1000)
-    },  
-    mouseup: function(){
+      }, 1000);
+    },
+    mouseup: function () {
       clearInterval(this.despInterval);
-      setTimeout(()=>{
+      setTimeout(() => {
         this.desp = 2;
-      })
-    },  
+      });
+    },
     navigate: function (to) {
       this.show = false;
       setTimeout(() => {
         this.$router.push(to);
       }, 60);
     },
-    proCent: function(){
-      if(this.$services.toolService.video){
-        const pc =  (this.$services.toolService.currentTime * 100) / this.$services.toolService.video.duration;
-        
-        return pc
-      }
-      return 0 
-    },
-    getTimeLineWidth( visibleObject){
-      
-      const t = this.$services.toolService.video.duration - visibleObject.from - (this.$services.toolService.video.duration - visibleObject.to  );
-      if(this.$services.toolService.video){
-        const pc =  (t * 100) / this.$services.toolService.video.duration ;
-        return pc
+    proCent: function () {
+      if (this.$services.toolService.video) {
+        const pc =
+          (this.$services.toolService.currentTime * 100) /
+          this.$services.toolService.video.duration;
+
+        return pc;
       }
       return 0;
-      
     },
-    getTimeLinePosition( t ){
-     
-      if(this.$services.toolService.video){
-        const pc =  (t * 100) / this.$services.toolService.video.duration;
-
-        return pc
+    getTimeLineWidth(visibleObject) {
+      const t =
+        this.$services.toolService.video.duration -
+        visibleObject.from -
+        (this.$services.toolService.video.duration - visibleObject.to);
+      if (this.$services.toolService.video) {
+        const pc = (t * 100) / this.$services.toolService.video.duration;
+        return pc;
       }
-      return 10
-      
-    }
+      return 0;
+    },
+    getTimeLinePosition(t) {
+      if (this.$services.toolService.video) {
+        const pc = (t * 100) / this.$services.toolService.video.duration;
+
+        return pc;
+      }
+      return 10;
+    },
   },
   created() {
     this.t = this.$services.localeService.t();
   },
   mounted() {
-   
     const domCanvas = document.getElementById("canV");
     this.$services.toolService.init(domCanvas);
-
-
   },
   // computed: {
   //   // procent: function () {
-  
+
   //   //   if(this.$services.toolService.video){
   //   //     const pc =  (this.$services.toolService.currentTime * 100) / this.$services.toolService.video.duration;
   //   //     console.log(pc)
   //   //     return pc
   //   //   }
-  //   //   return 0 
+  //   //   return 0
   //   // }
   // },
-  components: { 
-    
+  components: {
     IconArrowBoth,
     IconCircle,
     IconClose,
@@ -120,186 +117,173 @@ export default {
     IconStopRight,
     IconText,
     IconTriangle,
-    Button
- },
+    Button,
+  },
 };
-
-
-
 </script>
 
 <style  lang="scss">
 @import "../styles/media";
 @import "../components/editor/item.scss";
 
-.main{
-  display:flex;
+.main {
+  display: flex;
   flex-direction: column;
   flex: 1;
   height: 100vh;
 }
 
-.sidebar{
-  display:flex;
+.sidebar {
+  display: flex;
   flex-direction: column;
   min-width: 400px;
   border-left: 1px solid var(--color-deco-base);
   height: 100vh;
-  width:35%;
+  width: 35%;
 }
 
 .area {
-  box-shadow: 0 4px 4px 0 rgba(0,0,0,.25);
-  padding: 12px ;
-  width:100%;
-  min-height:54px;
-  overflow-y:auto;
-  
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+  padding: 12px;
+  width: 100%;
+  min-height: 54px;
+  overflow-y: auto;
 
-  &.video{
-    height:465px
+  &.video {
+    height: 465px;
   }
 
-  &.main-top{
+  &.main-top {
     //
   }
 
-  &.sidebar-top{
+  &.sidebar-top {
     //
   }
 
-  &.sidebar-content{
-
+  &.sidebar-content {
   }
 
-  &.area-expand{
+  &.area-expand {
     flex: 1;
   }
-
-  
 }
 
-.area-buttons-wrapper{
+.area-buttons-wrapper {
   display: flex;
   gap: 7px;
   flex-wrap: wrap;
   margin-bottom: 12px;
 }
 
-canvas{
+canvas {
   width: 100%;
 }
 
-.buttons-separator{
+.buttons-separator {
   width: 2px;
   height: 30px;
-  margin:0 7px;
+  margin: 0 7px;
   background-color: var(--color-deco-m-1);
 }
 
-.timer{
+.timer {
   height: 30px;
   line-height: 30px;
   font-size: 12px;
 }
 
-.timeline-wrapper{
-  
+.timeline-wrapper {
 }
 
-.tabs{
+.tabs {
   display: flex;
-  font-size:12px;
+  font-size: 12px;
 
-  &.Items{
-   border-bottom: 1px solid var(--primary-color-rgb);
+  &.Items {
+    border-bottom: 1px solid var(--primary-color-rgb);
   }
 
-  &.Markers{
+  &.Markers {
     border-bottom: 1px solid var(--secondary-color-rgb);
   }
-  
-  .tab{
+
+  .tab {
     padding: 3px 14px 7px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
-    cursor:pointer;
-    user-select: none; 
-    
-    &.Items{
-      &.active{
+    cursor: pointer;
+    user-select: none;
+
+    &.Items {
+      &.active {
         color: var(--primary-text-color-rgb);
         font-weight: var(--bold);
         background-color: var(--primary-color-rgb);
       }
     }
 
-    &.Markers{
-      &.active{
+    &.Markers {
+      &.active {
         color: var(--primary-text-color-rgb);
         font-weight: var(--bold);
         background-color: var(--secondary-color-rgb);
       }
     }
-    
-     
   }
 }
 
-.tab-content-container{
+.tab-content-container {
   padding: 14px 7px;
 }
 
-
-.timeline{
-  width:100%;
+.timeline {
+  width: 100%;
   background-color: var(--color-dark);
   height: 10px;
 
-  .currentTime{
+  .currentTime {
     width: 0;
     background-color: var(--primary-color-rgb);
     height: 100%;
   }
 }
 
-
-.range-wrapper{
+.range-wrapper {
   width: 100px;
   display: flex;
-  flex-direction:column;
-  
-  .range-labels{
-    display: flex;
-    
-    .range-label{
-      width:20%;
-      font-size:8px;
+  flex-direction: column;
 
-      text-align:center;
+  .range-labels {
+    display: flex;
+
+    .range-label {
+      width: 20%;
+      font-size: 8px;
+
+      text-align: center;
     }
   }
 }
 
-.item-blocks{
+.item-blocks {
   margin-top: 12px;
 }
 
-.item-block{
-  
-  margin-bottom:10px;
-  
-  .item-block-header{
+.item-block {
+  margin-bottom: 10px;
+
+  .item-block-header {
     background-color: var(--color-dark);
     padding: 3px;
   }
-  
-  .item-block-timeline{
+
+  .item-block-timeline {
     background-color: var(--color-M-1);
     height: 10px;
     position: relative;
 
-    .item-block-timeline_currentTime{
+    .item-block-timeline_currentTime {
       position: absolute;
       left: 20px;
       width: 20%;
@@ -307,272 +291,381 @@ canvas{
       height: 100%;
     }
   }
-  
-  .item-block-node-block{
+
+  .item-block-node-block {
     padding: 7px 0;
-    .item-block-node-label{
+    .item-block-node-label {
       font-size: 10px;
       padding-left: 12px;
     }
-    .item-block-node-keyframes{
+    .item-block-node-keyframes {
       background-color: var(--color-M-1);
       position: relative;
       width: 100%;
       height: 14px;
-      
-      .keyframe{
+
+      .keyframe {
         position: absolute;
         width: 20px;
         margin-top: -5px;
-        margin-left:-10px;
-       
+        margin-left: -10px;
       }
     }
   }
 }
 
 // ---------------------------------
-
-
-
-
 </style>
 
 <template>
-
-
   <div class="app-layout-body">
-
-    <div class="main"> 
-      <div class="area area-buttons-wrapper main-top ">
-        <Button :cta="()=>{}"  icon="" labelKey="action.load" />
-        <Button :cta="()=>{}"  icon="" labelKey="action.save" />
-        <Button :cta="()=>{}"  icon="" labelKey="action.export" />
+    <div class="main">
+      <div class="area area-buttons-wrapper main-top">
+        <Button :cta="() => {}" icon="" labelKey="action.load" />
+        <Button :cta="() => {}" icon="" labelKey="action.save" />
+        <Button :cta="() => {}" icon="" labelKey="action.export" />
       </div>
       <div class="area scroll video">
-        <canvas id="canV" ></canvas>
+        <canvas id="canV"></canvas>
       </div>
       <div class="area scroll area-expand">
         <div class="area-buttons-wrapper">
-
           <div class="range-wrapper">
-            
             <div class="range-labels">
-              <div class="range-label"
-                   :key="'range_' + parseInt(rangeVal)"
-                   v-for="rangeVal in range">{{rangeVal}}</div>
+              <div
+                class="range-label"
+                :key="'range_' + parseInt(rangeVal)"
+                v-for="rangeVal in range"
+              >
+                {{ rangeVal }}
+              </div>
             </div>
-            <div><input
+            <div>
+              <input
                 @mousedown="mousedown"
                 @mouseup="mouseup"
-                type="range" v-model="desp" step="1" min="0" max="4" /></div>
-            
+                type="range"
+                v-model="desp"
+                step="1"
+                min="0"
+                max="4"
+              />
+            </div>
           </div>
           <div class="buttons-separator"></div>
           <div class="timer">00:00:00:000</div>
-          <Button :cta="()=>{ $services.toolService.go(); }"  icon="dirRight" />
+          <Button
+            :cta="
+              () => {
+                $services.toolService.go();
+              }
+            "
+            icon="dirRight"
+          />
           <div class="buttons-separator"></div>
-          <Button :cta="()=>{ $services.toolService.reverse(); }"  icon="triangle" />
-          <Button :cta="()=>{ $services.toolService.play(); }"  icon="triangle" />
-          <Button :cta="()=>{ $services.toolService.stop(); }"   icon="square" />
+          <Button
+            :cta="
+              () => {
+                $services.toolService.reverse();
+              }
+            "
+            icon="triangle"
+          />
+          <Button
+            :cta="
+              () => {
+                $services.toolService.play();
+              }
+            "
+            icon="triangle"
+          />
+          <Button
+            :cta="
+              () => {
+                $services.toolService.stop();
+              }
+            "
+            icon="square"
+          />
           <div class="buttons-separator"></div>
-          <Button :cta="()=>{ $services.toolService.prev2(); }"   icon="leftDouble" />
-          <Button :cta="()=>{ $services.toolService.prev1(); }"  icon="left" />
-          <Button :cta="()=>{ $services.toolService.next1(); }"   icon="right" />
-          <Button :cta="()=>{ $services.toolService.next2(); }"   icon="rightDouble" />
+          <Button
+            :cta="
+              () => {
+                $services.toolService.prev2();
+              }
+            "
+            icon="leftDouble"
+          />
+          <Button
+            :cta="
+              () => {
+                $services.toolService.prev1();
+              }
+            "
+            icon="left"
+          />
+          <Button
+            :cta="
+              () => {
+                $services.toolService.next1();
+              }
+            "
+            icon="right"
+          />
+          <Button
+            :cta="
+              () => {
+                $services.toolService.next2();
+              }
+            "
+            icon="rightDouble"
+          />
           <div class="buttons-separator"></div>
-          <Button :cta="()=>{ $services.toolService.toStart(); }"   icon="stopLeft"  />
-          <Button :cta="()=>{ $services.toolService.toEnd(); }"   icon="stopRight" />
+          <Button
+            :cta="
+              () => {
+                $services.toolService.toStart();
+              }
+            "
+            icon="stopLeft"
+          />
+          <Button
+            :cta="
+              () => {
+                $services.toolService.toEnd();
+              }
+            "
+            icon="stopRight"
+          />
         </div>
         <div class="timeline-wrapper">
           <div>{{ $services.toolService.currentTime }}</div>
-          <div  class="timeline">
-            <div class="currentTime" v-if="$services.toolService.currentTime" :style="{width: `${proCent()}%`}"></div>
-          </div>
-          
-          
-          <div class="item-blocks" v-if="$services.toolService.video && $services.toolService.project">
-            
+          <div class="timeline">
             <div
-                class="item-block"
-                :key="'item_' + canvasItem.name"
-                v-for=" canvasItem in  $services.toolService.project.canvas">
-              
-              <div class="item-block-header">{{canvasItem.name}}</div>
+              class="currentTime"
+              v-if="$services.toolService.currentTime"
+              :style="{ width: `${proCent()}%` }"
+            ></div>
+          </div>
+
+          <div
+            class="item-blocks"
+            v-if="$services.toolService.video && $services.toolService.project"
+          >
+            <div
+              class="item-block"
+              :key="'item_' + canvasItem.name"
+              v-for="canvasItem in $services.toolService.project.canvas"
+            >
+              <div class="item-block-header">{{ canvasItem.name }}</div>
               <div class="item-block-timeline">
                 <div
-                    :style="{
-                      left: getTimeLinePosition(canvasItem.visible.from) + '%',
-                      width: getTimeLineWidth(canvasItem.visible) + '%'
-                    
-                      }"
-                    class="item-block-timeline_currentTime"></div>
+                  :style="{
+                    left: getTimeLinePosition(canvasItem.visible.from) + '%',
+                    width: getTimeLineWidth(canvasItem.visible) + '%',
+                  }"
+                  class="item-block-timeline_currentTime"
+                ></div>
               </div>
 
-              <template v-if="canvasItem.type === 'polygon'">
-                
-              </template>
-              <div class="item-block-node-block"
-                   :key="'item_' + canvasItem.name + '_node_' + node.id"
-                   v-for=" node in  canvasItem.nodes">
-                <div class="item-block-node-label">{{node.id}}</div>
+              <template v-if="canvasItem.type === 'polygon'"> </template>
+              <div
+                class="item-block-node-block"
+                :key="'item_' + canvasItem.name + '_node_' + node.id"
+                v-for="node in canvasItem.nodes"
+              >
+                <div class="item-block-node-label">{{ node.id }}</div>
                 <div class="item-block-node-keyframes">
-                  <div class="keyframe"
-                       :style="{
-                          left: getTimeLinePosition(frame.time) + '%',
-                        }"
-                       :key="'item_' + canvasItem.name + '_node_' + node.id + '_keyframe_' + idx "
-                       v-for=" ( frame, idx) in  node.frames"
+                  <div
+                    class="keyframe"
+                    :style="{
+                      left: getTimeLinePosition(frame.time) + '%',
+                    }"
+                    :key="
+                      'item_' +
+                      canvasItem.name +
+                      '_node_' +
+                      node.id +
+                      '_keyframe_' +
+                      idx
+                    "
+                    v-for="(frame, idx) in node.frames"
                   >
-                    <IconPics w="20"  />
+                    <IconPics w="20" />
                   </div>
                 </div>
               </div>
-              
             </div>
-            
           </div>
         </div>
       </div>
     </div>
-    <div class="sidebar"> 
-      <div class="area  area-buttons-wrapper sidebar-top">
-        <Button :cta="()=>{}"  icon="polygon" />
-        <Button :cta="()=>{}"  icon="square" />
-        <Button :cta="()=>{}"  icon="circle" />
-        <Button :cta="()=>{}"  label="line" />
-        <Button :cta="()=>{}"  icon="text" />
-        <Button :cta="()=>{}"  label="curve" />
-        <Button :cta="()=>{}"  label="pencil" />
-        <Button :cta="()=>{}"  label="Crono" />
-        <Button :cta="()=>{}"  label="Image" />
+    <div class="sidebar">
+      <div class="area area-buttons-wrapper sidebar-top">
+        <Button :cta="() => {}" icon="polygon" />
+        <Button :cta="() => {}" icon="square" />
+        <Button :cta="() => {}" icon="circle" />
+        <Button :cta="() => {}" label="line" />
+        <Button :cta="() => {}" icon="text" />
+        <Button :cta="() => {}" label="curve" />
+        <Button :cta="() => {}" label="pencil" />
+        <Button :cta="() => {}" label="Crono" />
+        <Button :cta="() => {}" label="Image" />
       </div>
       <div class="area scroll area-expand sidebar-content">
-         
-        <div class="tabs" :class="{[tab_active]: true}">
-          <div class="tab" 
+        <div class="tabs" :class="{ [tab_active]: true }">
+          <div
+            class="tab"
             :key="'tab_' + tabName"
-            v-on:click="()=>{ tab_active = tabName }"
-            v-for="tabName in tabs" :class="{'active': tabName=== tab_active, [tabName]: true}"> 
-            {{tabName}}
+            v-on:click="
+              () => {
+                tab_active = tabName;
+              }
+            "
+            v-for="tabName in tabs"
+            :class="{ active: tabName === tab_active, [tabName]: true }"
+          >
+            {{ tabName }}
           </div>
         </div>
 
         <div v-if="tab_active === 'Items'" class="tab-content-container">
-          
-          <div :key="'item-edit_' + canvasItem.name"
-                v-for=" canvasItem in  $services.toolService.project.canvas">
+          <div
+            :key="'item-edit_' + canvasItem.name"
+            v-for="canvasItem in $services.toolService.project.canvas"
+          >
             <div class="item-header">
               <div class="item-header_icon">
                 <IconPolygon v-if="canvasItem.type === 'polygon'" />
               </div>
               <div class="item-header_label">{{ canvasItem.name }}</div>
               <div class="item-header_close-button">
-                <IconClose h="18" w="18"/>
+                <IconClose h="18" w="18" />
               </div>
             </div>
-            <div class="item-content">
+            <div class="item-content closed">
               <div class="item-toolbar">
-                <Button :cta="()=>{}"  label="add node" />
-                <Button :cta="()=>{}"  label="down" />
-                <Button :cta="()=>{}"  label="up" />
-                <Button :cta="()=>{}"  label="..." />
+                <Button :cta="() => {}" label="add node" />
+                <Button :cta="() => {}" label="down" />
+                <Button :cta="() => {}" label="up" />
+                <Button :cta="() => {}" label="..." />
               </div>
               <div class="item-props">
                 <div class="prop-xy prop-row">
                   <div class="prop-col-labels">
-                    <div>x</div>
-                    <div>y</div>
+                    <div class="prop-cell">x</div>
+                    <div class="prop-cell">y</div>
                   </div>
                   <div class="prop-col-values">
-                    <div>125px</div>
-                    <div>268px</div>
+                    <div class="prop-cell">125px</div>
+                    <div class="prop-cell">268px</div>
                   </div>
                   <div class="prop-col-controls">
-                      <Button :cta="()=>{}"  label="move" />
+                    <Button :cta="() => {}" label="move" />
+                  </div>
+                </div>
+                <div class="prop-styles prop-row">
+                  <div class="prop-col-labels">
+                    <div class="prop-cell">fill</div>
+                    <div class="prop-cell">stroke</div>
+                  </div>
+                  <div class="prop-col-values">
+                    <div class="prop-cell">#55FF22 20%</div>
+                    <div class="prop-cell">#21C047 1px solid</div>
                   </div>
                 </div>
                 <div class="prop-time prop-row">
                   <div class="prop-col-labels">
-                    <div>fill</div>
-                    <div>stroke</div>
+                    <div class="prop-cell">from</div>
+                    <div class="prop-cell">to</div>
                   </div>
                   <div class="prop-col-values">
-                    <div>#55FF22 20%</div>
-                    <div>#21C047 1px solid</div>
+                    <div class="prop-cell">
+                      {{ canvasItem.visible.from }}
+                    </div>
+                    <div class="prop-cell">{{ canvasItem.visible.to }}</div>
                   </div>
-                  
+                  <div class="prop-col-controls">
+                    <div class="prop-cell">
+                      <Button :cta="() => {}" label="now" />
+                      <Button :cta="() => {}" label="move" />
+                    </div>
+                    <div class="prop-cell">
+                      <Button :cta="() => {}" label="now" />
+                      <Button :cta="() => {}" label="move" />
+                    </div>
+                  </div>
                 </div>
-                <div class="prop-styles prop-row"></div>
+
                 <div class="prop-nodes-animation prop-row">
-                  <input type="checkbox" id="checkbox" v-model="canvasItem.animateNodes" />
+                  <input
+                    type="checkbox"
+                    id="checkbox"
+                    v-model="canvasItem.animateNodes"
+                  />
                   <label for="checkbox">Animate nodes</label>
                 </div>
               </div>
-               <div class="item-node-section-title">Nodes </div>
-              
-                <div class="item-node_block"
+              <div class="item-node-section-title">Nodes</div>
+              <div class="item-node-blocks-container closed">
+                <div
+                  class="item-node_block"
                   :key="'item-edit_' + canvasItem.name"
-                  v-for=" nodeItem in  canvasItem.nodes"
-                 >
+                  v-for="nodeItem in canvasItem.nodes"
+                >
                   <div class="item-sub-header">
-                      <div class="decoration"></div>
-                      <div class="icon"><IconCircle h="20" /></div>
-                      <div class="label">{{ nodeItem.id }}</div>
-                      <div class="menu">
-                        <Button :cta="()=>{}"  label="..." />
-                      </div>
-                      <div class="collapsable"></div>
-                  
+                    <div class="decoration"></div>
+                    <div class="icon"><IconCircle h="20" /></div>
+                    <div class="label">{{ nodeItem.id }}</div>
+                    <div class="menu">
+                      <Button :cta="() => {}" label="add frame" />
+                      <Button :cta="() => {}" label="..." />
+                    </div>
+                    <div class="collapsable"></div>
                   </div>
                   <div class="item-node_block-body">
-                    
-                      <div 
-                        :key="'frame'"
-                        v-for=" frameItem in  nodeItem.frames"
-                        class="node-frame-block">
-                        <div class="item-sub-header">
-                          <div class="decoration"></div>
-                          <div class="icon"><IconPics h="20" /></div>
-                          <div class="label">{{ frameItem.time }}</div>
-                          <div class="menu">
-                            <Button :cta="()=>{}"  label="move" />
-                            <Button :cta="()=>{}"  label="now" />
-                            <Button :cta="()=>{}"  label="..." />
-                          </div>
+                    <div
+                      :key="'frame'"
+                      v-for="frameItem in nodeItem.frames"
+                      class="node-frame-block"
+                    >
+                      <div class="item-sub-header">
+                        <div class="decoration"></div>
+                        <div class="icon"><IconPics h="20" /></div>
+                        <div class="label">{{ frameItem.time }}</div>
+                        <div class="menu">
+                          <Button :cta="() => {}" label="move" />
+                          <Button :cta="() => {}" label="now" />
+                          <Button :cta="() => {}" label="..." />
                         </div>
-                        <div class="node-frame-block-body">
-                          <div class="prop-xy prop-row">
-                            <div class="prop-col-labels">
-                              <div>x</div>
-                              <div>y</div>
-                            </div>
-                            <div class="prop-col-values">
-                              <div>{{frameItem.x}}px</div>
-                              <div>{{frameItem.x}}px</div>
-                            </div>
-                            <div class="prop-col-controls">
-                              <Button :cta="()=>{}"  label="move" />
-                            </div>
+                      </div>
+                      <div class="node-frame-block-body">
+                        <div class="prop-xy prop-row">
+                          <div class="prop-col-labels">
+                            <div class="prop-cell">x</div>
+                            <div class="prop-cell">y</div>
+                          </div>
+                          <div class="prop-col-values">
+                            <div class="prop-cell">{{ frameItem.x }}px</div>
+                            <div class="prop-cell">{{ frameItem.x }}px</div>
+                          </div>
+                          <div class="prop-col-controls">
+                            <Button :cta="() => {}" label="move" />
                           </div>
                         </div>
                       </div>
+                    </div>
                   </div>
+                </div>
               </div>
-
-
-
             </div>
-            
-          </div>>
-
-
+          </div>
+          
         </div>
         <div v-if="tab_active === 'Markers'" class="tab-content-container">
           tab
         </div>
       </div>
     </div>
-
   </div>
 </template>
