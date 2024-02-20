@@ -7,6 +7,7 @@ export default {
   
   canvas:[
     {
+      id:'0001',
       name:"logo",
       type:'image',
       visible:{
@@ -19,6 +20,7 @@ export default {
       }
     },
     {
+      id:'0002',
       name:"area-01",
       type:'polygon',
       styles:{

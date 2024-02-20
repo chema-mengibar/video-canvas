@@ -1,6 +1,10 @@
 <script>
+import { toRaw } from 'vue'
 import IconArrowBoth from "../components/icons/icon-arrow-both.vue";
 import IconCircle from "../components/icons/icon-circle.vue";
+import IconImage from "../components/icons/icon-image.vue";
+import IconDown from "../components/icons/icon-down.vue";
+import IconUp from "../components/icons/icon-up.vue";
 import IconClose from "../components/icons/icon-close.vue";
 import IconDirectionRight from "../components/icons/icon-direction-right.vue";
 import IconEye from "../components/icons/icon-eye.vue";
@@ -30,6 +34,7 @@ export default {
     desp: 2,
     despInterval: 0,
     range: [-10, -1, 0, 1, 10],
+    itemsCollapsableOpened:{}
   }),
   methods: {
     mousedown: function () {
@@ -86,6 +91,13 @@ export default {
   mounted() {
     const domCanvas = document.getElementById("canV");
     this.$services.toolService.init(domCanvas);
+
+
+    this.$services.toolService.project.canvas.forEach( canvasItem =>{
+      this.itemsCollapsableOpened[canvasItem.id] = false;
+    })
+
+    console.log(toRaw(this.itemsCollapsableOpened))
   },
   // computed: {
   //   // procent: function () {
@@ -117,6 +129,9 @@ export default {
     IconStopRight,
     IconText,
     IconTriangle,
+    IconImage,
+    IconDown,
+    IconUp,
     Button,
   },
 };
@@ -537,13 +552,19 @@ canvas {
             <div class="item-header">
               <div class="item-header_icon">
                 <IconPolygon v-if="canvasItem.type === 'polygon'" />
+                <IconImage v-if="canvasItem.type === 'image'" />
               </div>
               <div class="item-header_label">{{ canvasItem.name }}</div>
-              <div class="item-header_close-button">
-                <IconClose h="18" w="18" />
-              </div>
+              <button class="item-header_close-button" v-bind:onclick="()=>{
+                  
+
+                  itemsCollapsableOpened[canvasItem.id] = !itemsCollapsableOpened[canvasItem.id]
+              }">
+                <IconDown v-if=" !itemsCollapsableOpened[canvasItem.id]" />
+                <IconUp  v-if=" itemsCollapsableOpened[canvasItem.id]" />
+              </button>
             </div>
-            <div class="item-content closed">
+            <div class="item-content" :class="{'closed': !itemsCollapsableOpened[canvasItem.id]}">
               <div class="item-toolbar">
                 <Button :cta="() => {}" label="add node" />
                 <Button :cta="() => {}" label="down" />
